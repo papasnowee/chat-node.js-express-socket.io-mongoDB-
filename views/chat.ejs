@@ -12,14 +12,17 @@
 </div>
 
 <script>
+
     var input = $('#room input');
     var ul = $('#room ul');
     var form = $('#room form');
+    var logout = document.getElementById('logout');
 
     var socket = io.connect('', {
         'reconnection': false
     });  // адрес сервера, если ничего не указано, то текущий сервер. Тут произойдет событие коннект на клиенте, сервер слушает это событие и реагирует.
-            // вторым аргументов идет объект опций-настроек
+    // вторым аргументов идет объект опций-настроек
+
     socket
         .on('message', function (username, message) {
             printMessage(username + "> " + message);
@@ -33,16 +36,16 @@
         .on('connect', function () {
             printStatus("соединение установлено");
             form.on('submit', sendMessage);  // назначаем обработчик на событие submit
-            input.prop('disabled', false);
+            input.prop('disabled', false); // делает input активным при коннекте: disabled == false;
         })
         .on('disconnect', function () {
             printStatus("соединение потеряно");
-            form.off('submit', sendMessage); // если не оффнуть, то обработчик назначится при реконнекте второй раз, и будут срабатывать уже два обработчика нра отсылку сообщений один с сообщением, другой с пустой строкой
+            form.off('submit', sendMessage); // если не оффнуть, то обработчик назначится при реконнекте второй раз, и будут срабатывать уже два обработчика на отсылку сообщений - один с сообщением, другой с пустой строкой
             input.prop('disabled', true);
             setTimeout(reconnect, 500);
         })
         .on('logout', function () {
-            location.href = "/"; // посе того, как посетитель вышел, его следуюет переинуть на главную страницу, что бы на экране не осталось истории чата
+            location.href = "/"; // после того, как посетитель вышел, его следует перекинуть на главную страницу, что бы на экране не осталось истории чата
         })
         .on('error', function (reason) {
             if (reason == "handshake unauthorized") {
@@ -53,6 +56,14 @@
                 }, 500);
             }
         });
+
+    logout.onclick = function () {
+        console.log('произошел дисконнект');
+        socket.emit('log_out', function () {
+        });
+
+        location.href = "/";
+    }
 
     function sendMessage() {
         var text = input.val();
