@@ -49,7 +49,7 @@ app.use(express.session({
 app.use(require('middleware/loadUser')); // данный миддлвер вставлять необходимо после сессии и перед роутом
 app.use(require('middleware/sendHttpError'));
 
-app.use(app.router); // в папке routes вроде как должен лежать модуль для обработки url-ов
+app.use(app.router);
 
 require('routes')(app);
 
