@@ -38,14 +38,6 @@ app.use(express.session({
     store: sessionStore // тут хранится сессия
 }));
 
-// app.use(function (req, res, next) {
-//     req.session.numberOfVisits = req.session.numberOfVisits + 1 || 1;  // req.session объект, в который можно записать свойства
-//     // и они автоматически сохранятся, когда этот запрос будет завершен. Когда посеститель заходит, он получает либо новую сессию,
-//     // либо восстанавливается старая по идентификатору и эта сессия записывается в req.session.
-//     // сохраняет в db.sessions в монго. Что бы посмотреть сохраненные сессии нужно запустить .\mongo chat --> db.sessions.find()
-//     res.send("Visits: " + req.session.numberOfVisits);
-// });
-
 app.use(require('middleware/loadUser')); // данный миддлвер вставлять необходимо после сессии и перед роутом
 app.use(require('middleware/sendHttpError'));
 
